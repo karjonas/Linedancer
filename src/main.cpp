@@ -90,11 +90,26 @@ void game_loop(void)
     al_start_timer(timer);
     User user{};
     //MainLoop main_loop = MainLoop();
+    int windowWidth = al_get_display_width(display);
+    int windowHeight = al_get_display_height(display);
+    
+    std::vector<Opponent> opponents;
+    std::vector<Opponent> shapeshifts;
+    opponents.push_back(rect_opponent_right(3));
+    opponents.push_back(rect_opponent_left(6));
+    opponents.push_back(rect_opponent_right(6));
+    shapeshifts.push_back(rect_opponent_left(8));
+    opponents.push_back(rect_opponent_right(8));
+    opponents.push_back(rect_opponent_left(10));
+    shapeshifts.push_back(rect_opponent_right(10));
+    opponents.push_back(rect_opponent_left(12));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
     double time_last = 0;
     double time_curr = 0;
+    double elapsed_time = 0;
+
     while (!done)
     {
         ALLEGRO_EVENT event;
@@ -106,6 +121,22 @@ void game_loop(void)
             redraw = true;
             time_curr = al_get_time();
             double dt = time_curr - time_last;
+            dt = std::min(dt, 0.1);
+            elapsed_time += dt;
+            
+            for (auto& opponent : opponents)
+            {
+                if (!opponent.active && opponent.time >= elapsed_time)
+                {
+                    opponent.active = true;
+                    opponent.x = opponent.direction == Direction::LEFT ? windowWidth + 100 : -100;                    
+                }
+                else if (opponent.active)
+                {
+                    int sign = opponent.direction == Direction::LEFT ? -1 : 1;
+                    opponent.x += sign*opponent.speed*dt;
+                }
+            }
 
             al_get_keyboard_state(&kbd_state);
             bool left = al_key_down(&kbd_state,ALLEGRO_KEY_LEFT) || al_key_down(&kbd_state, ALLEGRO_KEY_A);
@@ -121,8 +152,7 @@ void game_loop(void)
             }
             
             user.user_x = std::max(0.0, user.user_x);
-            user.user_x = std::min(600.0, user.user_x);
-            
+            user.user_x = std::min(600.0, user.user_x);            
             
             time_last = time_curr;
         }
@@ -142,7 +172,24 @@ void game_loop(void)
             redraw = false;
             al_clear_to_color(ColorScheme::color_bg());
             
-            Drawing::draw_user(1000, 600, user);
+            Drawing::draw_user(windowWidth, windowHeight, user);
+            
+            for (auto& opponent : opponents)
+            {
+                if (opponent.active)
+                {
+                    Drawing::draw_opponent(windowWidth,windowHeight,opponent);
+                }
+            }
+            
+            for (auto& opponent : shapeshifts)
+            {
+                if (opponent.active)
+                {
+                    Drawing::draw_opponent(windowWidth, windowHeight, opponent);
+                }
+            }
+            
             
             al_flip_display();
         }

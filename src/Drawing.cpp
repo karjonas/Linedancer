@@ -26,3 +26,22 @@ void Drawing::draw_user(int w, int h, User& user)
     al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color1(), 1.0f);
   }
 }
+
+void Drawing::draw_opponent(int /* w */, int h, Opponent& opponent)
+{
+  std::vector<Point> points;
+  if (opponent.shape == Shape::TRIANGLE)
+    points = calc_user_triangle_points(opponent.x, h/2, false, opponent.rect_size);
+  else
+    points = calc_user_rectangle_points(opponent.x, h/2, false, opponent.rect_size);
+  
+  const size_t num_pts = points.size();
+  
+  for (int i = 0; i < num_pts - 1; i++)
+  {
+    auto fst = points[i];
+    auto snd = points[i+1];
+    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color2(), 1.0f);
+  }
+}
+ 

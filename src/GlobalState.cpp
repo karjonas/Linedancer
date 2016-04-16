@@ -28,3 +28,37 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
   
   return {p0, p1, p2};
 }
+
+Opponent create_opponent(double time, double speed, Direction direction, Shape shape)
+{
+    Opponent o;
+    o.speed = speed;
+    o.active = false;
+    o.direction = direction;
+    o.rect_size = 40;
+    o.time = time;
+    o.shape = shape;
+    o.x = 0;
+    
+    return o;
+}
+
+Opponent rect_opponent_right(double time)
+{
+    return create_opponent(time,100,Direction::RIGHT,Shape::RECTANGLE);
+}
+
+Opponent rect_opponent_left(double time)
+{
+    return create_opponent(time,100,Direction::LEFT,Shape::RECTANGLE);
+}
+
+Opponent tri_opponent_right(double time)
+{
+    return create_opponent(time,100,Direction::RIGHT,Shape::TRIANGLE);
+}
+
+Opponent tri_opponent_left(double time)
+{
+    return create_opponent(time,100,Direction::LEFT,Shape::TRIANGLE);
+}

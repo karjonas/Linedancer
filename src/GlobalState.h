@@ -43,6 +43,7 @@ struct Opponent
 	Shape shape;
 	bool active;
 	double x;
+	double rect_size;
 };
 
 struct Point
@@ -55,3 +56,9 @@ struct Point
 
 std::vector<Point> calc_user_rectangle_points(int x, int y, bool flip, int rect_size);
 std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_size);
+
+Opponent create_opponent(double time, double speed, Direction direction, Shape shape);
+Opponent rect_opponent_right(double time);
+Opponent rect_opponent_left(double time);
+Opponent tri_opponent_right(double time);
+Opponent tri_opponent_left(double time);
