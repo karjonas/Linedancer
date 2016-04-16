@@ -94,15 +94,14 @@ void game_loop(void)
     int windowHeight = al_get_display_height(display);
     
     std::vector<Opponent> opponents;
-    std::vector<Opponent> shapeshifts;
-    opponents.push_back(rect_opponent_right(3));
-    opponents.push_back(rect_opponent_left(6));
-    opponents.push_back(rect_opponent_right(6));
-    shapeshifts.push_back(rect_opponent_left(8));
-    opponents.push_back(rect_opponent_right(8));
-    opponents.push_back(rect_opponent_left(10));
-    shapeshifts.push_back(rect_opponent_right(10));
-    opponents.push_back(rect_opponent_left(12));
+    opponents.push_back(rect_opponent_right(3, false));
+    opponents.push_back(rect_opponent_left(6, false));
+    opponents.push_back(rect_opponent_right(6, false));
+    opponents.push_back(tri_opponent_left(8, true));
+    opponents.push_back(tri_opponent_right(8, false));
+    opponents.push_back(tri_opponent_left(10, false));
+    opponents.push_back(rect_opponent_right(10, true));
+    opponents.push_back(rect_opponent_left(12, false));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -121,12 +120,12 @@ void game_loop(void)
             redraw = true;
             time_curr = al_get_time();
             double dt = time_curr - time_last;
-            dt = std::min(dt, 0.1);
+            dt = std::min(dt, 0.2);
             elapsed_time += dt;
             
             for (auto& opponent : opponents)
             {
-                if (!opponent.active && opponent.time >= elapsed_time)
+                if (!opponent.active && elapsed_time >= opponent.time)
                 {
                     opponent.active = true;
                     opponent.x = opponent.direction == Direction::LEFT ? windowWidth + 100 : -100;                    
@@ -137,7 +136,18 @@ void game_loop(void)
                     opponent.x += sign*opponent.speed*dt;
                 }
             }
-
+            
+            for (int i = 0; i < opponents.size(); i++)
+            {
+                auto& opponent = opponents[i];
+                if (overlaps(user.user_x, opponent.x, user.rect_size))
+                {
+                    user.user_shape = opponent.is_shapeshifter ? opponent.shape : user.user_shape;
+                    opponents.erase(opponents.begin() + i);
+                    i--;                    
+                }
+            }
+            
             al_get_keyboard_state(&kbd_state);
             bool left = al_key_down(&kbd_state,ALLEGRO_KEY_LEFT) || al_key_down(&kbd_state, ALLEGRO_KEY_A);
             bool right = al_key_down(&kbd_state,ALLEGRO_KEY_RIGHT) || al_key_down(&kbd_state, ALLEGRO_KEY_D);
@@ -178,19 +188,10 @@ void game_loop(void)
             {
                 if (opponent.active)
                 {
-                    Drawing::draw_opponent(windowWidth,windowHeight,opponent);
-                }
-            }
-            
-            for (auto& opponent : shapeshifts)
-            {
-                if (opponent.active)
-                {
                     Drawing::draw_opponent(windowWidth, windowHeight, opponent);
                 }
             }
-            
-            
+          
             al_flip_display();
         }
         

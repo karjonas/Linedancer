@@ -26,13 +26,13 @@ struct User
 	Shape user_shape = Shape::RECTANGLE;
 };
 
-struct ColorScheme
+namespace ColorScheme
 {
-	static ALLEGRO_COLOR color_bg() { return al_map_rgb(33,33,32);}
-	static ALLEGRO_COLOR color0() { return al_map_rgb(240,241,238);}
-	static ALLEGRO_COLOR color1() { return al_map_rgb(19,82,162);}
-	static ALLEGRO_COLOR color2() { return al_map_rgb(255,212,100);}
-	static ALLEGRO_COLOR color3() { return al_map_rgb(251,105,100);}
+	ALLEGRO_COLOR color_bg();
+	ALLEGRO_COLOR color0();
+	ALLEGRO_COLOR color1();
+	ALLEGRO_COLOR color2();
+	ALLEGRO_COLOR color3();
 };
 
 struct Opponent
@@ -44,6 +44,7 @@ struct Opponent
 	bool active;
 	double x;
 	double rect_size;
+	bool is_shapeshifter;
 };
 
 struct Point
@@ -57,8 +58,10 @@ struct Point
 std::vector<Point> calc_user_rectangle_points(int x, int y, bool flip, int rect_size);
 std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_size);
 
-Opponent create_opponent(double time, double speed, Direction direction, Shape shape);
-Opponent rect_opponent_right(double time);
-Opponent rect_opponent_left(double time);
-Opponent tri_opponent_right(double time);
-Opponent tri_opponent_left(double time);
+Opponent create_opponent(double time, double speed, Direction direction, Shape shape, bool is_shapeshifter);
+Opponent rect_opponent_right(double time, bool is_shapeshifter);
+Opponent rect_opponent_left(double time, bool is_shapeshifter);
+Opponent tri_opponent_right(double time, bool is_shapeshifter);
+Opponent tri_opponent_left(double time, bool is_shapeshifter);
+
+bool overlaps(int v0, int v1, int width);

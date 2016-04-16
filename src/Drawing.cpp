@@ -23,7 +23,7 @@ void Drawing::draw_user(int w, int h, User& user)
   {
     auto fst = points[i];
     auto snd = points[i+1];
-    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color1(), 1.0f);
+    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color0(), 3.0f);
   }
 }
 
@@ -41,7 +41,7 @@ void Drawing::draw_opponent(int /* w */, int h, Opponent& opponent)
   {
     auto fst = points[i];
     auto snd = points[i+1];
-    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color2(), 1.0f);
+    al_draw_line(fst.x, fst.y, snd.x, snd.y, opponent.is_shapeshifter ? ColorScheme::color0() : ColorScheme::color1(), 3.0f);
   }
 }
  

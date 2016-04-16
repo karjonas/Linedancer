@@ -29,7 +29,7 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
   return {p0, p1, p2};
 }
 
-Opponent create_opponent(double time, double speed, Direction direction, Shape shape)
+Opponent create_opponent(double time, double speed, Direction direction, Shape shape, bool is_shapeshifter)
 {
     Opponent o;
     o.speed = speed;
@@ -39,26 +39,43 @@ Opponent create_opponent(double time, double speed, Direction direction, Shape s
     o.time = time;
     o.shape = shape;
     o.x = 0;
+    o.is_shapeshifter = is_shapeshifter;
     
     return o;
 }
 
-Opponent rect_opponent_right(double time)
+Opponent rect_opponent_right(double time, bool is_shapeshifter)
 {
-    return create_opponent(time,100,Direction::RIGHT,Shape::RECTANGLE);
+    return create_opponent(time,200,Direction::RIGHT,Shape::RECTANGLE, is_shapeshifter);
 }
 
-Opponent rect_opponent_left(double time)
+Opponent rect_opponent_left(double time, bool is_shapeshifter)
 {
-    return create_opponent(time,100,Direction::LEFT,Shape::RECTANGLE);
+    return create_opponent(time,200,Direction::LEFT,Shape::RECTANGLE, is_shapeshifter);
 }
 
-Opponent tri_opponent_right(double time)
+Opponent tri_opponent_right(double time, bool is_shapeshifter)
 {
-    return create_opponent(time,100,Direction::RIGHT,Shape::TRIANGLE);
+    return create_opponent(time,200,Direction::RIGHT,Shape::TRIANGLE, is_shapeshifter);
 }
 
-Opponent tri_opponent_left(double time)
+Opponent tri_opponent_left(double time, bool is_shapeshifter)
 {
-    return create_opponent(time,100,Direction::LEFT,Shape::TRIANGLE);
+    return create_opponent(time,200,Direction::LEFT,Shape::TRIANGLE, is_shapeshifter);
 }
+
+bool overlaps(int v0, int v1, int width)
+{
+  int v0min = v0 - width/2;
+  int v0max = v0 + width/2;
+  int v1min = v1 - width/2;
+  int v1max = v1 + width/2;
+
+  return (v0min <= v1max and v1min <= v0max);
+}
+
+ALLEGRO_COLOR ColorScheme::color_bg() { return al_map_rgb(33,33,32);}
+ALLEGRO_COLOR ColorScheme::color0() { return al_map_rgb(251,105,100);}
+ALLEGRO_COLOR ColorScheme::color1() { return al_map_rgb(240,241,238);}
+ALLEGRO_COLOR ColorScheme::color2() { return al_map_rgb(19,82,162);}
+ALLEGRO_COLOR ColorScheme::color3() { return al_map_rgb(255,212,100);}
