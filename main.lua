@@ -7,9 +7,10 @@ user_speed = 500 -- pixels per second
 move_left = false
 move_right = false
 
-rect_size = 80
+rect_size = 40
 
 is_debug = false
+elapsed_time = 0
 
 user_shape = "rectangle"
 
@@ -19,24 +20,24 @@ color2 = {r = 19, g = 82, b = 162}
 color3 = {r = 255, g = 212, b = 100}
 color0 = {r = 251, g = 105, b = 100}
 
-function opponent(mid_x, speed, direction, shape)
-  return {speed = speed, x = mid_x, direction = direction, shape = shape}
+function opponent(time, speed, direction, shape)
+  return { speed = speed, time = time, direction = direction, shape = shape, active = false, x = 0 }
 end
 
-function rect_opponent_right(x)
-  return opponent(x, 100, "right", "rectangle")  
+function rect_opponent_right(time)
+  return opponent(time, 100, "right", "rectangle")  
 end
 
-function rect_opponent_left(x)
-  return opponent(x, 100, "left", "rectangle")  
+function rect_opponent_left(time)
+  return opponent(time, 100, "left", "rectangle")  
 end
 
-function triangle_opponent_left(x)
-  return opponent(x, 100, "left", "triangle")  
+function triangle_opponent_left(time)
+  return opponent(time, 100, "left", "triangle")  
 end
 
-function triangle_opponent_right(x)
-  return opponent(x, 100, "right", "triangle")  
+function triangle_opponent_right(time)
+  return opponent(time, 100, "right", "triangle")  
 end
 
 function overlaps(v0,v1,width)
@@ -50,18 +51,22 @@ end
 
 -- Load some default values for our rectangle.
 function love.load(arg)
-    if arg[#arg] == "-debug" then
-      require("mobdebug").start()
-      is_debug = true
-    end
-    table.insert(opponents, rect_opponent_left(400))
-    table.insert(opponents, rect_opponent_right(-100))
-    table.insert(opponents, rect_opponent_right(-500))
-    table.insert(opponents, rect_opponent_left(600))
-    table.insert(opponents, triangle_opponent_right(-1300))
-    table.insert(opponents, triangle_opponent_left(1400))
-    
-    table.insert(shapeshifts, triangle_opponent_right(-900))
+  if arg[#arg] == "-debug" then
+    require("mobdebug").start()
+    is_debug = true
+  end
+  
+  user_x = love.graphics.getWidth() / 2
+
+  table.insert(opponents,   rect_opponent_left(3))
+  table.insert(opponents,   rect_opponent_right(3))
+  table.insert(opponents,   rect_opponent_left(6))
+  table.insert(opponents,   rect_opponent_right(6))
+  table.insert(shapeshifts, triangle_opponent_left(8))
+  table.insert(opponents,   triangle_opponent_right(8))
+  table.insert(opponents,   triangle_opponent_left(10))
+  table.insert(shapeshifts, rect_opponent_right(10))
+  table.insert(opponents,   rect_opponent_left(12))
 
   love.graphics.setBackgroundColor(color_bg.r, color_bg.g, color_bg.b)
 end
@@ -96,6 +101,8 @@ function collide()
 end
  
 function love.keypressed( key, scancode, isrepeat )
+  if not is_debug then return end
+  
   if key == "space" then
     if user_shape == "rectangle" then
       user_shape = "triangle"
@@ -109,6 +116,28 @@ end
 function love.update(dt)
   
   dt = is_debug and math.min(dt,0.1) or dt
+  
+  elapsed_time = elapsed_time + dt
+  
+  window_width = love.graphics.getWidth()
+  
+  for i=1, table.getn(shapeshifts) do
+    shape = shapeshifts[i] 
+    if (not shape.active) and (shape.time >= elapsed_time) then
+      shape.active = true
+      shape.x = (shape.direction == "left") and (window_width + 100) or (-100)
+      shapeshifts[i] = shape
+    end
+  end
+  
+  for i=1, table.getn(opponents) do
+    shape = opponents[i] 
+    if (not shape.active) and (shape.time >= elapsed_time) then
+      shape.active = true
+      shape.x = (shape.direction == "left") and (window_width + 100) or (-100)
+      opponents[i] = shape
+    end
+  end
   
   move_left = love.keyboard.isDown("left") or love.keyboard.isDown("a")
   move_right = love.keyboard.isDown("right") or love.keyboard.isDown("d")
@@ -225,11 +254,15 @@ function love.draw()
     draw_user()
     
     for key, value in pairs(opponents) do
-      draw_opponent(value, color1)
+      if (value.active) then
+        draw_opponent(value, color1)
+      end
     end
 
     for key, value in pairs(shapeshifts) do
-      draw_opponent(value, color0)
+      if (value.active) then
+        draw_opponent(value, color2)
+      end
     end
 
 end
