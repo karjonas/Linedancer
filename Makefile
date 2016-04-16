@@ -1,5 +1,5 @@
 CXX := g++
-CC_FLAGS := -std=c++14
+CC_FLAGS := -std=c++14 -g -O0
 CPP_FILES := $(wildcard src/*.cpp)
 OBJ_FILES := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
 LD_FLAGS := -L/usr/lib -lallegro -lallegro_primitives -lallegro_font \
