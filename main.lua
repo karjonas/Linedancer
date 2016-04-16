@@ -1,5 +1,6 @@
 opponents = {}
- 
+shapeshifts = {}
+
 user_x = 300
 user_speed = 500 -- pixels per second
 
@@ -52,28 +53,43 @@ function love.load(arg)
     if arg[#arg] == "-debug" then
       require("mobdebug").start()
       is_debug = true
-      end
+    end
     table.insert(opponents, rect_opponent_left(400))
     table.insert(opponents, rect_opponent_right(-100))
     table.insert(opponents, rect_opponent_right(-500))
     table.insert(opponents, rect_opponent_left(600))
     table.insert(opponents, triangle_opponent_right(-1300))
     table.insert(opponents, triangle_opponent_left(1400))
-    table.insert(opponents, triangle_opponent_right(-900))
+    
+    table.insert(shapeshifts, triangle_opponent_right(-900))
 
   love.graphics.setBackgroundColor(color_bg.r, color_bg.g, color_bg.b)
 end
 
 -- Increase the size of the rectangle every frame.
 function collide()
-  num_pts = table.getn(opponents)
   
+  num_pts = table.getn(opponents)
   i = 1
   while (i <= num_pts) do
-    if overlaps(user_x, opponents[i].x, rect_size) then
+    opponent = opponents[i]
+    if overlaps(user_x, opponent.x, rect_size) then
       table.remove(opponents, i)
       i = i - 1
       num_pts = num_pts - 1
+    end
+    i = i + 1
+  end
+  
+  num_pts = table.getn(shapeshifts)
+  i = 1
+  while (i <= num_pts) do
+    shape = shapeshifts[i]
+    if overlaps(user_x, shape.x, rect_size) then
+      table.remove(shapeshifts, i)
+      i = i - 1
+      num_pts = num_pts - 1
+      user_shape = shape.shape
     end
     i = i + 1
   end
@@ -110,6 +126,11 @@ function love.update(dt)
   move_right = false
   
   for key, value in pairs(opponents) do
+    sign = (value.direction == "left") and -1 or 1
+    value.x = value.x + sign*value.speed*dt
+  end
+  
+    for key, value in pairs(shapeshifts) do
     sign = (value.direction == "left") and -1 or 1
     value.x = value.x + sign*value.speed*dt
   end
@@ -170,7 +191,7 @@ function draw_user()
   end  
 end
 
-function draw_opponent(opponent)
+function draw_opponent(opponent, color)
   w = love.graphics.getWidth()
   h = love.graphics.getHeight()
 
@@ -181,14 +202,18 @@ function draw_opponent(opponent)
     points = calc_user_rectangle_points(opponent.x, h/2, false)
   end
  
-  love.graphics.setColor(color1.r, color1.g, color1.b)
+  love.graphics.setColor(color.r, color.g, color.b)
   
   num_pts = table.getn(points)
   
   for i = 1, num_pts - 1 do
     fst, snd = points[i], points[i+1]
     love.graphics.line(fst.x, fst.y, snd.x, snd.y)
-  end  
+  end
+  
+  love.graphics.setColor(color_bg.r, color_bg.g, color_bg.b)
+
+  love.graphics.line(points[1].x, points[1].y, points[num_pts].x, points[num_pts].y)
 end
  
 
@@ -200,7 +225,11 @@ function love.draw()
     draw_user()
     
     for key, value in pairs(opponents) do
-      draw_opponent(value)
+      draw_opponent(value, color1)
+    end
+
+    for key, value in pairs(shapeshifts) do
+      draw_opponent(value, color0)
     end
 
 end
