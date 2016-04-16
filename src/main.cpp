@@ -140,7 +140,7 @@ void game_loop(void)
             for (int i = 0; i < opponents.size(); i++)
             {
                 auto& opponent = opponents[i];
-                if (overlaps(user.user_x, opponent.x, user.rect_size))
+                if (opponent.active && overlaps(user.user_x, opponent.x, user.rect_size))
                 {
                     user.user_shape = opponent.is_shapeshifter ? opponent.shape : user.user_shape;
                     opponents.erase(opponents.begin() + i);

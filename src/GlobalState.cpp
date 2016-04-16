@@ -23,7 +23,7 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
   int sign = flip ? 1 : -1;
 
   Point p0{x - rect_half, y };
-  Point p1{x, y + sign*rect_half };
+  Point p1{x, y + sign*rect_size };
   Point p2{x + rect_half, y };
   
   return {p0, p1, p2};
