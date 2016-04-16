@@ -55,6 +55,13 @@ struct Point
 	int y;
 };
 
+struct LevelData
+{
+	std::vector<Opponent> opponents;
+};
+
+LevelData create_level(size_t num_opponents);
+
 std::vector<Point> calc_user_rectangle_points(int x, int y, bool flip, int rect_size);
 std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_size);
 
@@ -65,3 +72,4 @@ Opponent tri_opponent_right(double time, bool is_shapeshifter);
 Opponent tri_opponent_left(double time, bool is_shapeshifter);
 
 bool overlaps(int v0, int v1, int width);
+

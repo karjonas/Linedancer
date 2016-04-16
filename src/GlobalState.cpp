@@ -29,6 +29,20 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
   return {p0, p1, p2};
 }
 
+LevelData create_level(size_t num_opponents)
+{
+    LevelData level;
+    level.opponents.push_back(rect_opponent_right(3, false));
+    level.opponents.push_back(rect_opponent_left(6, false));
+    level.opponents.push_back(rect_opponent_right(6, false));
+    level.opponents.push_back(tri_opponent_left(8, true));
+    level.opponents.push_back(tri_opponent_right(8, false));
+    level.opponents.push_back(tri_opponent_left(10, false));
+    level.opponents.push_back(rect_opponent_right(10, true));
+    level.opponents.push_back(rect_opponent_left(12, false));
+    return level;
+}
+
 Opponent create_opponent(double time, double speed, Direction direction, Shape shape, bool is_shapeshifter)
 {
     Opponent o;
@@ -74,8 +88,10 @@ bool overlaps(int v0, int v1, int width)
   return (v0min <= v1max and v1min <= v0max);
 }
 
-ALLEGRO_COLOR ColorScheme::color_bg() { return al_map_rgb(33,33,32);}
-ALLEGRO_COLOR ColorScheme::color0() { return al_map_rgb(251,105,100);}
-ALLEGRO_COLOR ColorScheme::color1() { return al_map_rgb(240,241,238);}
+ALLEGRO_COLOR ColorScheme::color_bg() { return al_map_rgb(0x50,0x50,0x50);}
+ALLEGRO_COLOR ColorScheme::color0() { return al_map_rgb(0x9b,0xd7,0xd5);}
+ALLEGRO_COLOR ColorScheme::color1() { return al_map_rgb(0xff,0x72,0x60);}
 ALLEGRO_COLOR ColorScheme::color2() { return al_map_rgb(19,82,162);}
 ALLEGRO_COLOR ColorScheme::color3() { return al_map_rgb(255,212,100);}
+
+//  #129793 #505050 #FFF5C3 #9BD7D5 #FF7260

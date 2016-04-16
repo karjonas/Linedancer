@@ -18,6 +18,7 @@ bool done;
 ALLEGRO_EVENT_QUEUE* event_queue;
 ALLEGRO_TIMER* timer;
 ALLEGRO_DISPLAY* display;
+ALLEGRO_FONT* font;
 
 void abort_game(const char* message)
 {
@@ -67,6 +68,9 @@ void init(void)
     al_register_event_source(event_queue, al_get_display_event_source(display));
     
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+    
+    font = al_load_ttf_font("src/Atari_Full.ttf", 32,0 );
+
     done = false;
 }
  
@@ -88,29 +92,28 @@ void game_loop(void)
 {
     bool redraw = true;
     al_start_timer(timer);
+        
     User user{};
-    //MainLoop main_loop = MainLoop();
+
     int windowWidth = al_get_display_width(display);
     int windowHeight = al_get_display_height(display);
     
-    std::vector<Opponent> opponents;
-    opponents.push_back(rect_opponent_right(3, false));
-    opponents.push_back(rect_opponent_left(6, false));
-    opponents.push_back(rect_opponent_right(6, false));
-    opponents.push_back(tri_opponent_left(8, true));
-    opponents.push_back(tri_opponent_right(8, false));
-    opponents.push_back(tri_opponent_left(10, false));
-    opponents.push_back(rect_opponent_right(10, true));
-    opponents.push_back(rect_opponent_left(12, false));
+    LevelData level(create_level(10));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
+    double start_time = 0;
     double time_last = 0;
     double time_curr = 0;
     double elapsed_time = 0;
+    double elapsed_time_unadjusted = 0;
 
+    bool death = false;
+    size_t score = 0;    
     while (!done)
-    {
+    {        
+        auto& opponents = level.opponents;
+        
         ALLEGRO_EVENT event;
         al_wait_for_event(event_queue, &event);
 
@@ -121,7 +124,8 @@ void game_loop(void)
             time_curr = al_get_time();
             double dt = time_curr - time_last;
             dt = std::min(dt, 0.2);
-            elapsed_time += dt;
+            elapsed_time_unadjusted += dt;
+            elapsed_time = elapsed_time_unadjusted - start_time;
             
             for (auto& opponent : opponents)
             {
@@ -143,6 +147,10 @@ void game_loop(void)
                 if (opponent.active && overlaps(user.user_x, opponent.x, user.rect_size))
                 {
                     user.user_shape = opponent.is_shapeshifter ? opponent.shape : user.user_shape;
+                    if (opponent.shape != user.user_shape)
+                    {
+                        death = true;
+                    }
                     opponents.erase(opponents.begin() + i);
                     i--;                    
                 }
@@ -161,8 +169,8 @@ void game_loop(void)
                 user.user_x = user.user_x + user.user_speed*dt;
             }
             
-            user.user_x = std::max(0.0, user.user_x);
-            user.user_x = std::min(600.0, user.user_x);            
+            user.user_x = std::max(40.0, user.user_x);
+            user.user_x = std::min(static_cast<double>(windowWidth) - 40.0, user.user_x);            
             
             time_last = time_curr;
         }
@@ -192,9 +200,19 @@ void game_loop(void)
                 }
             }
           
+            al_draw_text(font, al_map_rgb(255,255,255), 640/2, (480/4),ALLEGRO_ALIGN_CENTRE, "Welcome!");
+
             al_flip_display();
         }
         
+        if (death)
+        {
+            level = create_level(10);
+            user = User{};
+            start_time = al_get_time();
+            death = false;
+            
+        }
     }
 }
  
