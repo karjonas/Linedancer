@@ -18,12 +18,24 @@ color2 = {r = 19, g = 82, b = 162}
 color3 = {r = 255, g = 212, b = 100}
 color0 = {r = 251, g = 105, b = 100}
 
+function opponent(mid_x, speed, direction, shape)
+  return {speed = speed, x = mid_x, direction = direction, shape = shape}
+end
+
 function rect_opponent_right(x)
-  return {speed = 100, x = x, direction = "right"}  
+  return opponent(x, 100, "right", "rectangle")  
 end
 
 function rect_opponent_left(x)
-  return {speed = 100, x = x, direction = "left"}  
+  return opponent(x, 100, "left", "rectangle")  
+end
+
+function triangle_opponent_left(x)
+  return opponent(x, 100, "left", "triangle")  
+end
+
+function triangle_opponent_right(x)
+  return opponent(x, 100, "right", "triangle")  
 end
 
 function overlaps(v0,v1,width)
@@ -45,9 +57,9 @@ function love.load(arg)
     table.insert(opponents, rect_opponent_right(-100))
     table.insert(opponents, rect_opponent_right(-500))
     table.insert(opponents, rect_opponent_left(600))
-    table.insert(opponents, rect_opponent_right(-1300))
-    table.insert(opponents, rect_opponent_left(1400))
-    table.insert(opponents, rect_opponent_right(-900))
+    table.insert(opponents, triangle_opponent_right(-1300))
+    table.insert(opponents, triangle_opponent_left(1400))
+    table.insert(opponents, triangle_opponent_right(-900))
 
   love.graphics.setBackgroundColor(color_bg.r, color_bg.g, color_bg.b)
 end
@@ -158,11 +170,16 @@ function draw_user()
   end  
 end
 
-function draw_opponent_rect(opponent)
+function draw_opponent(opponent)
   w = love.graphics.getWidth()
   h = love.graphics.getHeight()
- 
-  points = calc_user_rectangle_points(opponent.x, h/2, false)
+
+  points = {}
+  if (opponent.shape == "triangle") then
+    points = calc_user_triangle_points(opponent.x, h/2, false)
+  else
+    points = calc_user_rectangle_points(opponent.x, h/2, false)
+  end
  
   love.graphics.setColor(color1.r, color1.g, color1.b)
   
@@ -183,7 +200,7 @@ function love.draw()
     draw_user()
     
     for key, value in pairs(opponents) do
-      draw_opponent_rect(value)
+      draw_opponent(value)
     end
 
 end
