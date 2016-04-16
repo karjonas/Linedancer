@@ -3,9 +3,26 @@ function love.load(arg)
     if arg[#arg] == "-debug" then require("mobdebug").start() end
 end
  
+user_x = 100
+user_speed = 500 -- pixels per second
+
+move_left = false
+move_right = false
+
 -- Increase the size of the rectangle every frame.
 function love.update(dt)
-
+  
+  move_left = love.keyboard.isDown("left") or love.keyboard.isDown("a")
+  move_right = love.keyboard.isDown("right") or love.keyboard.isDown("d")
+  
+  if (move_left and not move_right) then
+    user_x = user_x - user_speed*dt
+  elseif (move_right and not move_left) then
+    user_x = user_x + user_speed*dt
+  end
+  
+  move_left = false
+  move_right = false
 end
  
 
@@ -29,7 +46,7 @@ function draw_user_rect()
   w = love.graphics.getWidth()
   h = love.graphics.getHeight()
  
-  points = calc_user_rect_points(w/2 -100, h/2, false)
+  points = calc_user_rect_points(user_x, h/2, false)
   
   table.insert(points, 1, {x = 0, y = h/2}) -- start_pt
   table.insert(points, table.getn(points) + 1, {x = w, y = h/2}) -- end_pt
