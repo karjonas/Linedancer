@@ -1,6 +1,6 @@
 opponents = {}
  
-user_x = 500
+user_x = 300
 user_speed = 500 -- pixels per second
 
 move_left = false
@@ -8,8 +8,14 @@ move_right = false
   
 rect_size = 40
 
-function rect_opponent(x)
+is_debug = false
+
+function rect_opponent_right(x)
   return {speed = 100, x = x, direction = "right"}  
+end
+
+function rect_opponent_left(x)
+  return {speed = 100, x = x, direction = "left"}  
 end
 
 function overlaps(v0,v1,width)
@@ -23,26 +29,35 @@ end
 
 -- Load some default values for our rectangle.
 function love.load(arg)
-    if arg[#arg] == "-debug" then require("mobdebug").start() end
-    table.insert(opponents, rect_opponent(400))
+    if arg[#arg] == "-debug" then
+      require("mobdebug").start()
+      is_debug = true
+      end
+    table.insert(opponents, rect_opponent_left(400))
+    table.insert(opponents, rect_opponent_right(-100))
+
 end
 
 -- Increase the size of the rectangle every frame.
 function collide()
   num_pts = table.getn(opponents)
   
-  for i = 1, num_pts do
+  i = 1
+  while (i <= num_pts) do
     if overlaps(user_x, opponents[i].x, rect_size) then
       table.remove(opponents, i)
       i = i - 1
       num_pts = num_pts - 1
     end
+    i = i + 1
   end  
 
 end
  
 
 function love.update(dt)
+  
+  dt = is_debug and math.min(dt,0.1) or dt
   
   move_left = love.keyboard.isDown("left") or love.keyboard.isDown("a")
   move_right = love.keyboard.isDown("right") or love.keyboard.isDown("d")
