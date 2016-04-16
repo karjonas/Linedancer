@@ -1,6 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+#include "Drawing.h"
+#include "GlobalState.h"
 
+#include "allegro5/allegro.h"
+#include <allegro5/allegro_primitives.h>
+
+#include <vector>
+
+void Drawing::draw_user(int w, int h, User& user)
+{
+  std::vector<Point> points;
+  if (user.user_shape == Shape::TRIANGLE)
+    points = calc_user_triangle_points(user.user_x, h/2, false, user.rect_size);
+  else
+    points = calc_user_rectangle_points(user.user_x, h/2, false, user.rect_size);
+
+  points.insert(points.begin(), Point(0,h/2));
+  points.push_back(Point(w,h/2));
+  
+  const size_t num_pts = points.size();
+  
+  for (int i = 0; i < num_pts - 1; i++)
+  {
+    auto fst = points[i];
+    auto snd = points[i+1];
+    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color1(), 1.0f);
+  }
+}

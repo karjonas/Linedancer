@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string>
+#include <algorithm>
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
@@ -11,13 +12,12 @@
 #include <allegro5/allegro_primitives.h>
 
 #include "GlobalState.h"
+#include "Drawing.h"
 
 bool done;
 ALLEGRO_EVENT_QUEUE* event_queue;
 ALLEGRO_TIMER* timer;
 ALLEGRO_DISPLAY* display;
-
-ColorScheme scheme{};
 
 void abort_game(const char* message)
 {
@@ -88,22 +88,49 @@ void game_loop(void)
 {
     bool redraw = true;
     al_start_timer(timer);
+    User user{};
     //MainLoop main_loop = MainLoop();
+    
+    ALLEGRO_KEYBOARD_STATE kbd_state;
+    
+    double time_last = 0;
+    double time_curr = 0;
     while (!done)
     {
         ALLEGRO_EVENT event;
         al_wait_for_event(event_queue, &event);
- 
+
         if (event.type == ALLEGRO_EVENT_TIMER)
         {
             //done = main_loop.tick();
-            redraw = true;            
+            redraw = true;
+            time_curr = al_get_time();
+            double dt = time_curr - time_last;
+
+            al_get_keyboard_state(&kbd_state);
+            bool left = al_key_down(&kbd_state,ALLEGRO_KEY_LEFT) || al_key_down(&kbd_state, ALLEGRO_KEY_A);
+            bool right = al_key_down(&kbd_state,ALLEGRO_KEY_RIGHT) || al_key_down(&kbd_state, ALLEGRO_KEY_D);
+
+            if (left && !right)
+            {
+                user.user_x = user.user_x - user.user_speed*dt;
+            }
+            else if (!left && right)
+            {
+                user.user_x = user.user_x + user.user_speed*dt;
+            }
+            
+            user.user_x = std::max(0.0, user.user_x);
+            user.user_x = std::min(600.0, user.user_x);
+            
+            
+            time_last = time_curr;
         }
         else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
                 done = true;
             }
-            else {
+            {                
                 //main_loop.key_pressed(event.keyboard.keycode);
             }
         }
@@ -113,10 +140,13 @@ void game_loop(void)
 
         if (redraw && al_is_event_queue_empty(event_queue)) {
             redraw = false;
-            al_clear_to_color(scheme.color_bg());
-
+            al_clear_to_color(ColorScheme::color_bg());
+            
+            Drawing::draw_user(1000, 600, user);
+            
             al_flip_display();
         }
+        
     }
 }
  
