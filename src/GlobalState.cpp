@@ -29,17 +29,31 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
   return {p0, p1, p2};
 }
 
-LevelData create_level(size_t num_opponents)
+LevelData create_level(size_t num_opponents, int seed, bool is_first)
 {
     LevelData level;
-    level.opponents.push_back(tri_opponent_left(12, true));
-    level.opponents.push_back(tri_opponent_left(20, false));
-    level.opponents.push_back(rect_opponent_left(28, false));
-    //level.opponents.push_back(tri_opponent_left(8, true));
-    //level.opponents.push_back(tri_opponent_right(8, false));
-    //level.opponents.push_back(tri_opponent_left(10, false));
-    //level.opponents.push_back(rect_opponent_right(10, true));
-    //level.opponents.push_back(rect_opponent_left(12, false));
+    if (is_first)
+    {
+        level.first_level = is_first;
+        level.opponents.push_back(tri_opponent_left(12, true));
+        level.opponents.push_back(tri_opponent_left(20, false));
+        level.opponents.push_back(rect_opponent_left(31, false));
+    }
+    else
+    {
+        level.opponents.push_back(tri_opponent_left(2, true));
+        level.opponents.push_back(tri_opponent_left(3, false));
+        level.opponents.push_back(rect_opponent_left(5, false));
+        level.opponents.push_back(tri_opponent_left(6, true));
+        level.opponents.push_back(tri_opponent_left(7, false));
+        level.opponents.push_back(rect_opponent_left(8, false));
+        level.opponents.push_back(tri_opponent_left(10, true));
+        level.opponents.push_back(tri_opponent_left(13, false));
+        level.opponents.push_back(rect_opponent_left(15, false));
+        level.opponents.push_back(tri_opponent_left(17, true));
+        level.opponents.push_back(tri_opponent_left(23, false));
+    }
+            
     return level;
 }
 

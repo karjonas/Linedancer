@@ -98,7 +98,7 @@ void game_loop(void)
     int windowWidth = al_get_display_width(display);
     int windowHeight = al_get_display_height(display);
     
-    LevelData level(create_level(10));
+    LevelData level(create_level(10, 0, true));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -109,7 +109,7 @@ void game_loop(void)
     double elapsed_time_unadjusted = 0;
 
     bool death = false;
-    size_t score = 0;    
+    int num_kills = 0;  
     while (!done)
     {        
         auto& opponents = level.opponents;
@@ -151,6 +151,10 @@ void game_loop(void)
                     {
                         death = true;
                     }
+                    else
+                    {
+                        num_kills++;
+                    }
                     opponents.erase(opponents.begin() + i);
                     i--;                    
                 }
@@ -178,7 +182,7 @@ void game_loop(void)
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
                 done = true;
             }
-            {                
+            {
                 //main_loop.key_pressed(event.keyboard.keycode);
             }
         }
@@ -200,18 +204,24 @@ void game_loop(void)
                 }
             }
           
-            Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, elapsed_time);
-
+            if (level.first_level)
+            {
+                Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, elapsed_time);
+            }
+            else
+            {
+                Drawing::draw_score_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, num_kills);
+            }
             al_flip_display();
         }
         
         if (death)
         {
-            level = create_level(10);
+            level = create_level(10, 0, false);
             user = User{};
             start_time = al_get_time();
             death = false;
-            
+            num_kills = 0;            
         }
     }
 }

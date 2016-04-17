@@ -59,13 +59,16 @@ void Drawing::draw_tutorial_texts(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x
     }
     else if (time > 17.0 && time < 23.5)
     {
-      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Collide with same shape to absorb it.");
+      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Collide with same shape to kill it.");
     }
     else if (time > 24.0 && time < 30)
     {
       al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Collide with another shape and ");
-      al_draw_text(font, color, x, y + 30, ALLEGRO_ALIGN_CENTRE, "color and it absorbs you!");
+      al_draw_text(font, color, x, y + 30, ALLEGRO_ALIGN_CENTRE, "color and it kills you!");
     }
 }
 
- 
+void Drawing::draw_score_texts(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y, int score)
+{
+    al_draw_textf(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Score: %d", score);
+}

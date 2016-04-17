@@ -58,9 +58,10 @@ struct Point
 struct LevelData
 {
 	std::vector<Opponent> opponents;
+	bool first_level = false;
 };
 
-LevelData create_level(size_t num_opponents);
+LevelData create_level(size_t num_opponents, int seed, bool is_first);
 
 std::vector<Point> calc_user_rectangle_points(int x, int y, bool flip, int rect_size);
 std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_size);
