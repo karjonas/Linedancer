@@ -98,7 +98,7 @@ void game_loop(void)
     int windowWidth = al_get_display_width(display);
     int windowHeight = al_get_display_height(display);
     
-    LevelData level(create_level(10, 0, true));
+    LevelData level(create_level(100, 0, false));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -217,7 +217,7 @@ void game_loop(void)
         
         if (death)
         {
-            level = create_level(10, 0, false);
+            level = create_level(100, 0, false);
             user = User{};
             start_time = al_get_time();
             death = false;

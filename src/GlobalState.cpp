@@ -1,6 +1,8 @@
 #include "GlobalState.h"
 
+#include <algorithm>
 #include <vector>
+#include <cstdlib>     /* srand, rand */
 
 std::vector<Point> calc_user_rectangle_points(int x, int y, bool flip, int rect_size)
 {
@@ -29,6 +31,53 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
   return {p0, p1, p2};
 }
 
+std::vector<Opponent> generate_opponents(size_t num_opponents, int seed)
+{
+    srand(seed + 2);
+    
+    std::vector<Opponent> opponents;
+    
+    Direction prev_dir = Direction::LEFT;
+    Shape prev_shape = Shape::RECTANGLE;
+    bool prev_shifter = false;
+    int time_glob = 0;
+    for (int i = 0; i < num_opponents; i++)
+    {
+        time_glob++;
+        
+        bool skip = (rand() % 2) == 1;
+        if (skip)
+        {
+            time_glob++;
+        }
+        int time = time_glob/2;
+        
+        Direction dir = prev_dir == Direction::LEFT ? Direction::RIGHT : Direction::LEFT;
+        Shape shape = (rand() % 2) == 1 ? Shape::RECTANGLE : Shape::TRIANGLE;
+        bool shape_shift = (rand() % 5) == 1;
+
+        Opponent o;
+        
+        if (shape_shift)
+        {
+            shape = prev_shape == Shape::RECTANGLE ? Shape::TRIANGLE : Shape::RECTANGLE;
+            o = create_opponent(time, 100, dir, shape, true); // Morph into next shape
+        }
+        else
+        {
+            o = create_opponent(time, 100, dir, prev_shape, false);
+        }
+        
+        prev_dir = o.direction;
+        prev_shape = o.shape;
+        prev_shifter = o.is_shapeshifter;
+        
+        opponents.push_back(o);      
+    }
+    
+    //std::reverse(opponents.begin(),opponents.end());
+    return opponents;
+}
 LevelData create_level(size_t num_opponents, int seed, bool is_first)
 {
     LevelData level;
@@ -41,17 +90,7 @@ LevelData create_level(size_t num_opponents, int seed, bool is_first)
     }
     else
     {
-        level.opponents.push_back(tri_opponent_left(2, true));
-        level.opponents.push_back(tri_opponent_left(3, false));
-        level.opponents.push_back(rect_opponent_left(5, false));
-        level.opponents.push_back(tri_opponent_left(6, true));
-        level.opponents.push_back(tri_opponent_left(7, false));
-        level.opponents.push_back(rect_opponent_left(8, false));
-        level.opponents.push_back(tri_opponent_left(10, true));
-        level.opponents.push_back(tri_opponent_left(13, false));
-        level.opponents.push_back(rect_opponent_left(15, false));
-        level.opponents.push_back(tri_opponent_left(17, true));
-        level.opponents.push_back(tri_opponent_left(23, false));
+        level.opponents = generate_opponents(num_opponents, seed);
     }
             
     return level;
