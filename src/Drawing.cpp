@@ -90,6 +90,13 @@ void Drawing::draw_score_texts(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, i
     al_draw_textf(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Score: %d", score);
 }
 
+void Drawing::draw_level_texts(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y, int level, double time)
+{
+    if (time < 3)
+        al_draw_textf(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Level %d", level);
+}
+
+
 void Drawing::draw_all(int w, int h, User& user, const std::vector<Opponent>& opponents)
 {
     std::vector<ShapePoints> sps;

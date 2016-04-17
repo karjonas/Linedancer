@@ -103,7 +103,7 @@ void game_loop(void)
     User user{};
     user.user_x = windowWidth/2;
     
-    LevelData level(create_level(100, 0, false));
+    LevelData level(create_level(100, 0, true));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -178,8 +178,8 @@ void game_loop(void)
                 user.user_x = user.user_x + user.user_speed*dt;
             }
             
-            user.user_x = std::max(100.0 + user.rect_size/2, user.user_x);
-            user.user_x = std::min(static_cast<double>(windowWidth) - 100.0 -(user.rect_size/2), user.user_x);            
+            user.user_x = std::max(100.0 + 2*user.rect_size, user.user_x);
+            user.user_x = std::min(static_cast<double>(windowWidth) - 100.0 -(2*user.rect_size), user.user_x);            
             
             time_last = time_curr;
         }
@@ -207,7 +207,7 @@ void game_loop(void)
             }
             else
             {
-                Drawing::draw_score_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, num_kills);
+                Drawing::draw_level_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, 0, elapsed_time);
             }
             al_flip_display();
         }
