@@ -89,7 +89,7 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int level)
     bool prev_shifter = false;
     int time_glob = 0;
 
-    const int speed = level >= 3 ? 200 : 100;
+    const int speed = level >= 3 ? 150 : 100;
     const int shift_rate = level >= 3 ? 4 : 2;
     
     int orders[6][4] = {{0,1,2,3},{0,2,1,3},{0,1,2,3}, {1,0,2,3}, {1,0,3,2}, {1,3,0,2}};

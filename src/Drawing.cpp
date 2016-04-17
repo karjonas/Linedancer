@@ -96,6 +96,10 @@ void Drawing::draw_level_texts(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, i
         al_draw_textf(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Level %d", level);
 }
 
+void Drawing::draw_credits(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y)
+{
+    al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Thanks for playing!");
+}
 
 void Drawing::draw_all(int w, int h, User& user, const std::vector<Opponent>& opponents)
 {
