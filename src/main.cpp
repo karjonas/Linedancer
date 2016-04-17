@@ -59,7 +59,7 @@ void init(void)
    
     al_set_new_display_flags(ALLEGRO_WINDOWED);
     //display = al_create_display(disp_data.width, disp_data.height);
-    display = al_create_display(640, 480);
+    display = al_create_display(800, 480);
     if (!display)
         abort_game("Failed to create display");
  
@@ -199,16 +199,8 @@ void game_loop(void)
             redraw = false;
             al_clear_to_color(ColorScheme::color_bg());
             
-            Drawing::draw_user(windowWidth, windowHeight, user);
-            
-            for (auto& opponent : opponents)
-            {
-                if (opponent.active)
-                {
-                    Drawing::draw_opponent(windowWidth, windowHeight, opponent);
-                }
-            }
-          
+            Drawing::draw_all(windowWidth, windowHeight, user, opponents);
+
             if (level.first_level)
             {
                 Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2 , windowHeight/5, elapsed_time);
