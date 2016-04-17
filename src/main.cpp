@@ -102,9 +102,9 @@ void game_loop(void)
         
     User user{};
     user.user_x = windowWidth/2;
-    int level_nr = 4;
+    int level_nr = 1;
 
-    LevelData level(create_level(60, level_nr, false));
+    LevelData level(create_level(60, level_nr, true));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -231,7 +231,7 @@ void game_loop(void)
             death = false;
             num_kills = 0;            
         }
-        else if (opponents.empty() && finished_level != level_nr)
+        else if (opponents.empty())
         {
             level_nr++;
             level = create_level(60, level_nr, false);
