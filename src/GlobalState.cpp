@@ -65,9 +65,11 @@ std::vector<Point> calc_shape_points(int x, int y, bool flip, int rect_size, Sha
 }
 
 
-std::vector<Opponent> generate_opponents(size_t num_opponents, int seed)
+std::vector<Opponent> generate_opponents(size_t num_opponents, int seed, const std::vector<Shape>& allowed_shapes)
 {
     srand(seed + 2);
+    
+    const size_t n_shapes = allowed_shapes.size();
     
     std::vector<Opponent> opponents;
     
@@ -87,14 +89,14 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int seed)
         int time = time_glob/2;
         
         Direction dir = prev_dir == Direction::LEFT ? Direction::RIGHT : Direction::LEFT;
-        Shape shape = static_cast<Shape>(rand() % 3);
+        Shape shape = allowed_shapes[rand() % n_shapes];
         bool shape_shift = (rand() % 5) == 1;
 
         Opponent o;
         
         if (shape_shift)
         {
-            shape = static_cast<Shape>((static_cast<int>(prev_shape) + 1) % 3);
+            shape = allowed_shapes[(static_cast<int>(prev_shape) + 1) % n_shapes];
             o = create_opponent(time, 100, dir, shape, true); // Morph into next shape
         }
         else
@@ -112,7 +114,8 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int seed)
     //std::reverse(opponents.begin(),opponents.end());
     return opponents;
 }
-LevelData create_level(size_t num_opponents, int seed, bool is_first)
+
+LevelData create_level(size_t num_opponents, int seed, bool is_first, const std::vector<Shape>& allowed_shapes)
 {
     LevelData level;
     if (is_first)
@@ -124,7 +127,7 @@ LevelData create_level(size_t num_opponents, int seed, bool is_first)
     }
     else
     {
-        level.opponents = generate_opponents(num_opponents, seed);
+        level.opponents = generate_opponents(num_opponents, seed, allowed_shapes);
     }
             
     return level;

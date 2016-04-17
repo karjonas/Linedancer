@@ -104,7 +104,7 @@ void game_loop(void)
     user.user_x = windowWidth/2;
     int level_nr = 1;
 
-    LevelData level(create_level(60, 0, false));
+    LevelData level(create_level(60, 0, false, {Shape::RECTANGLE, Shape::TRIANGLE}));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -215,7 +215,11 @@ void game_loop(void)
         
         if (death)
         {
-            level = create_level(60, level_nr, false);
+            if (level_nr == 1)
+                level = create_level(60, level_nr, false, {Shape::RECTANGLE, Shape::TRIANGLE});
+            else
+                level = create_level(60, level_nr, false, {Shape::RECTANGLE, Shape::TALL_RECTANGLE, Shape::TRIANGLE});
+
             user = User{};
             user.user_x = windowWidth/2;
             start_time = al_get_time();
@@ -225,7 +229,7 @@ void game_loop(void)
         else if (opponents.empty())
         {
             level_nr++;
-            level = create_level(40, level_nr, false);
+            level = create_level(40, level_nr, false, {Shape::RECTANGLE, Shape::TALL_RECTANGLE, Shape::TRIANGLE});
             user = User{};
             user.user_x = windowWidth/2;
             start_time = al_get_time();
