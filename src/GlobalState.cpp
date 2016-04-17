@@ -65,10 +65,21 @@ std::vector<Point> calc_shape_points(int x, int y, bool flip, int rect_size, Sha
 }
 
 
-std::vector<Opponent> generate_opponents(size_t num_opponents, int level, const std::vector<Shape>& allowed_shapes)
+std::vector<Opponent> generate_opponents(size_t num_opponents, int level)
 {
     srand(level + 2);
-    
+    std::vector<Shape> allowed_shapes;
+    if (level == 1)
+    {
+       allowed_shapes.push_back(Shape::RECTANGLE);
+       allowed_shapes.push_back(Shape::TRIANGLE);
+    }
+    else
+    {
+       allowed_shapes.push_back(Shape::RECTANGLE);
+       allowed_shapes.push_back(Shape::TALL_RECTANGLE);
+       allowed_shapes.push_back(Shape::TRIANGLE);
+    }
     const size_t n_shapes = allowed_shapes.size();
     
     std::vector<Opponent> opponents;
@@ -79,47 +90,65 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int level, const 
     int time_glob = 0;
 
     const int speed = level >= 3 ? 200 : 100;
-    const int shift_rate = level >= 3 ? 2 : 2;
+    const int shift_rate = level >= 3 ? 4 : 2;
     
-    for (int i = 0; i < num_opponents; i++)
+    int orders[6][4] = {{0,1,2,3},{0,2,1,3},{0,1,2,3}, {1,0,2,3}, {1,0,3,2}, {1,3,0,2}};
+    
+    bool last_skipped = false;
+    
+    for (int i = 0; i < (num_opponents/4); i++)
     {
-        time_glob++;
+        time_glob += 4;
         
-        bool skip = (rand() % 2) == 1;
-        if (skip)
+        std::vector<std::pair<int, Direction>> side_ops;
+        side_ops.push_back(std::make_pair(time_glob/2, Direction::LEFT));
+        side_ops.push_back(std::make_pair(time_glob/2, Direction::RIGHT));
+        side_ops.push_back(std::make_pair(time_glob/2 + 1, Direction::LEFT));
+        side_ops.push_back(std::make_pair(time_glob/2 + 1, Direction::RIGHT));
+        
+        const int idx = rand() % 4;
+        
+        for (int j = 0; j < 4; j++)
         {
-            time_glob++;
-        }
-        int time = time_glob/2;
-        
-        Direction dir = prev_dir == Direction::LEFT ? Direction::RIGHT : Direction::LEFT;
-        Shape shape = allowed_shapes[rand() % n_shapes];
-        bool shape_shift = ((rand() % shift_rate) == 1) && !prev_shifter;
+            const bool skip = (rand() % 4) == 0;
+            if (skip && !last_skipped)
+            {
+                last_skipped = true;
+                continue;
+            }
+            auto p = side_ops[orders[idx][j]];
+            const int time = p.first;
+            const Direction dir = p.second;
+            
+            Shape shape = allowed_shapes[rand() % n_shapes];
+            bool shape_shift = ((rand() % shift_rate) == 0) && !prev_shifter;
 
-        Opponent o;
-        
-        if (shape_shift)
-        {
-            shape = allowed_shapes[(static_cast<int>(prev_shape) + 1) % n_shapes];
-            o = create_opponent(time, speed, dir, shape, true); // Morph into next shape
+            Opponent o;
+
+            if (shape_shift)
+            {
+                if (shape == prev_shape)
+                  shape = allowed_shapes[rand() % n_shapes];
+                o = create_opponent(time, speed, dir, shape, true); // Morph into next shape
+            }
+            else
+            {
+                o = create_opponent(time, speed, dir, prev_shape, false);
+            }
+
+            prev_dir = o.direction;
+            prev_shape = o.shape;
+            prev_shifter = o.is_shapeshifter;
+
+            opponents.push_back(o);      
         }
-        else
-        {
-            o = create_opponent(time, speed, dir, prev_shape, false);
-        }
-        
-        prev_dir = o.direction;
-        prev_shape = o.shape;
-        prev_shifter = o.is_shapeshifter;
-        
-        opponents.push_back(o);      
     }
     
     //std::reverse(opponents.begin(),opponents.end());
     return opponents;
 }
 
-LevelData create_level(size_t num_opponents, int level_idx, bool is_first, const std::vector<Shape>& allowed_shapes)
+LevelData create_level(size_t num_opponents, int level_idx, bool is_first)
 {
     LevelData level;
     if (is_first)
@@ -131,7 +160,7 @@ LevelData create_level(size_t num_opponents, int level_idx, bool is_first, const
     }
     else
     {
-        level.opponents = generate_opponents(num_opponents, level_idx, allowed_shapes);
+        level.opponents = generate_opponents(num_opponents, level_idx);
     }
             
     return level;
