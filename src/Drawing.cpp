@@ -3,6 +3,7 @@
 
 #include "allegro5/allegro.h"
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
 
 #include <vector>
 
@@ -44,4 +45,27 @@ void Drawing::draw_opponent(int /* w */, int h, Opponent& opponent)
     al_draw_line(fst.x, fst.y, snd.x, snd.y, opponent.is_shapeshifter ? ColorScheme::color0() : ColorScheme::color1(), 3.0f);
   }
 }
+
+void Drawing::draw_tutorial_texts(ALLEGRO_FONT* font, ALLEGRO_COLOR color, int x, int y, double time)
+{
+    if (time < 2.0 && time < 3.5)
+      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Welcome!");
+    else if (time > 4.0 && time < 9.5)
+      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Move using arrow keys.");
+    else if (time > 10.0 && time < 16.5)
+    {
+      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Collide with a same color shape");
+      al_draw_text(font, color, x, y + 30, ALLEGRO_ALIGN_CENTRE, "to morph into it.");
+    }
+    else if (time > 17.0 && time < 23.5)
+    {
+      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Collide with same shape to absorb it.");
+    }
+    else if (time > 24.0 && time < 30)
+    {
+      al_draw_text(font, color, x, y, ALLEGRO_ALIGN_CENTRE, "Collide with another shape and ");
+      al_draw_text(font, color, x, y + 30, ALLEGRO_ALIGN_CENTRE, "color and it absorbs you!");
+    }
+}
+
  

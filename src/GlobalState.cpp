@@ -32,14 +32,14 @@ std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_s
 LevelData create_level(size_t num_opponents)
 {
     LevelData level;
-    level.opponents.push_back(rect_opponent_right(3, false));
-    level.opponents.push_back(rect_opponent_left(6, false));
-    level.opponents.push_back(rect_opponent_right(6, false));
-    level.opponents.push_back(tri_opponent_left(8, true));
-    level.opponents.push_back(tri_opponent_right(8, false));
-    level.opponents.push_back(tri_opponent_left(10, false));
-    level.opponents.push_back(rect_opponent_right(10, true));
-    level.opponents.push_back(rect_opponent_left(12, false));
+    level.opponents.push_back(tri_opponent_left(12, true));
+    level.opponents.push_back(tri_opponent_left(20, false));
+    level.opponents.push_back(rect_opponent_left(28, false));
+    //level.opponents.push_back(tri_opponent_left(8, true));
+    //level.opponents.push_back(tri_opponent_right(8, false));
+    //level.opponents.push_back(tri_opponent_left(10, false));
+    //level.opponents.push_back(rect_opponent_right(10, true));
+    //level.opponents.push_back(rect_opponent_left(12, false));
     return level;
 }
 

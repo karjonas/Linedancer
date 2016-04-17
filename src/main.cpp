@@ -69,7 +69,7 @@ void init(void)
     
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
     
-    font = al_load_ttf_font("src/Atari_Full.ttf", 32,0 );
+    font = al_load_ttf_font("src/Atari_Full.ttf", 16,0 );
 
     done = false;
 }
@@ -200,7 +200,7 @@ void game_loop(void)
                 }
             }
           
-            al_draw_text(font, al_map_rgb(255,255,255), 640/2, (480/4),ALLEGRO_ALIGN_CENTRE, "Welcome!");
+            Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, elapsed_time);
 
             al_flip_display();
         }
