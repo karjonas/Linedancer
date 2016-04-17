@@ -7,7 +7,8 @@
 enum class Shape
 {
 	RECTANGLE,
-	TRIANGLE
+	TRIANGLE,
+	TALL_RECTANGLE
 };
 
 enum class Direction
@@ -49,10 +50,10 @@ struct Opponent
 
 struct Point
 {
-	Point(int x_in, int y_in) : x(x_in), y(y_in) {}
+	Point(double x_in, double y_in) : x(x_in), y(y_in) {}
 
-	int x;
-	int y;
+	double x;
+	double y;
 };
 
 struct LevelData
@@ -63,8 +64,10 @@ struct LevelData
 
 LevelData create_level(size_t num_opponents, int seed, bool is_first);
 
-std::vector<Point> calc_user_rectangle_points(int x, int y, bool flip, int rect_size);
-std::vector<Point> calc_user_triangle_points(int x, int y, bool flip, int rect_size);
+std::vector<Point> calc_user_rectangle_points(double x, double y, bool flip, int rect_size);
+std::vector<Point> calc_user_triangle_points(double x, double y, bool flip, int rect_size);
+std::vector<Point> calc_user_tall_rectangle_points(double x, double y, bool flip, int rect_size);
+std::vector<Point> calc_shape_points(int x, int y, bool flip, int rect_size, Shape shape);
 
 Opponent create_opponent(double time, double speed, Direction direction, Shape shape, bool is_shapeshifter);
 Opponent rect_opponent_right(double time, bool is_shapeshifter);

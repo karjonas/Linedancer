@@ -102,13 +102,9 @@ void Drawing::draw_all(int w, int h, User& user, const std::vector<Opponent>& op
     std::vector<ShapePoints> sps;
     
     {
-        std::vector<Point> points;
+        std::vector<Point> points =
+            calc_shape_points(user.user_x, h/2, false, user.rect_size, user.user_shape);
 
-        if (user.user_shape == Shape::TRIANGLE)
-            points = calc_user_triangle_points(user.user_x, h/2, false, user.rect_size);
-        else
-            points = calc_user_rectangle_points(user.user_x, h/2, false, user.rect_size);
-        
         ShapePoints p;
         p.color = ColorScheme::color0();
         p.mid_x = user.user_x;
@@ -122,12 +118,8 @@ void Drawing::draw_all(int w, int h, User& user, const std::vector<Opponent>& op
     {
         if (!opponent.active)
             continue;
-        std::vector<Point> points;
-        
-        if (opponent.shape == Shape::TRIANGLE)
-            points = calc_user_triangle_points(opponent.x, h/2, false, opponent.rect_size);
-        else
-            points = calc_user_rectangle_points(opponent.x, h/2, false, opponent.rect_size);
+        std::vector<Point> points =
+            calc_shape_points(opponent.x, h/2, false, opponent.rect_size, opponent.shape);
         
         ShapePoints p;
         p.color = opponent.is_shapeshifter ? ColorScheme::color0() : ColorScheme::color1();

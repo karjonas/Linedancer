@@ -102,8 +102,9 @@ void game_loop(void)
         
     User user{};
     user.user_x = windowWidth/2;
-    
-    LevelData level(create_level(100, 0, true));
+    int level_nr = 1;
+
+    LevelData level(create_level(60, 0, false));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     
@@ -207,19 +208,29 @@ void game_loop(void)
             }
             else
             {
-                Drawing::draw_level_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, 0, elapsed_time);
+                Drawing::draw_level_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, level_nr, elapsed_time);
             }
             al_flip_display();
         }
         
         if (death)
         {
-            level = create_level(100, 0, false);
+            level = create_level(60, level_nr, false);
             user = User{};
             user.user_x = windowWidth/2;
             start_time = al_get_time();
             death = false;
             num_kills = 0;            
+        }
+        else if (opponents.empty())
+        {
+            level_nr++;
+            level = create_level(40, level_nr, false);
+            user = User{};
+            user.user_x = windowWidth/2;
+            start_time = al_get_time();
+            death = false;
+            num_kills = 0;      
         }
     }
 }
