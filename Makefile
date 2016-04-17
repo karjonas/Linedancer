@@ -1,9 +1,9 @@
 CXX := g++
-CC_FLAGS := -std=c++14 -g -O0
+CC_FLAGS := -std=c++14 
 CPP_FILES := $(wildcard src/*.cpp)
 OBJ_FILES := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
 LD_FLAGS := -L/usr/lib -lallegro -lallegro_primitives -lallegro_font \
- -lallegro_ttf -lallegro_audio -lallegro_acodec -lallegro_image
+ -lallegro_ttf -lallegro_image
 INCLUDE := -I./src -I/usr/include/allegro5
 
 all: ld35 

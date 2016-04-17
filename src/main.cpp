@@ -38,18 +38,6 @@ void init(void)
     al_init_font_addon(); // initialize the font addon
     al_init_ttf_addon();// initialize the ttf (True Type Font) addon 
 
-    if(!al_install_audio()){
-        abort_game("failed to initialize audio!\n");
-    }
- 
-    if(!al_init_acodec_addon()){
-       abort_game("failed to initialize audio codecs!\n");
-    }
- 
-    if (!al_reserve_samples(1)){
-        abort_game("failed to reserve samples!\n");
-    }
- 
     timer = al_create_timer(1.0 / 60);
     if (!timer)
         abort_game("Failed to create timer");
