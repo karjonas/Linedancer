@@ -55,7 +55,7 @@ void init(void)
         abort_game("Failed to create timer");
  
     al_set_new_display_flags(ALLEGRO_WINDOWED);
-    display = al_create_display(640, 480);
+    display = al_create_display(1600, 480);
     if (!display)
         abort_game("Failed to create display");
  
@@ -92,11 +92,12 @@ void game_loop(void)
 {
     bool redraw = true;
     al_start_timer(timer);
-        
-    User user{};
 
     int windowWidth = al_get_display_width(display);
     int windowHeight = al_get_display_height(display);
+        
+    User user{};
+    user.user_x = windowWidth/2;
     
     LevelData level(create_level(100, 0, false));
     
@@ -219,6 +220,7 @@ void game_loop(void)
         {
             level = create_level(100, 0, false);
             user = User{};
+            user.user_x = windowWidth/2;
             start_time = al_get_time();
             death = false;
             num_kills = 0;            
