@@ -61,11 +61,11 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int seed)
         if (shape_shift)
         {
             shape = prev_shape == Shape::RECTANGLE ? Shape::TRIANGLE : Shape::RECTANGLE;
-            o = create_opponent(time, 200, dir, shape, true); // Morph into next shape
+            o = create_opponent(time, 100, dir, shape, true); // Morph into next shape
         }
         else
         {
-            o = create_opponent(time, 200, dir, prev_shape, false);
+            o = create_opponent(time, 100, dir, prev_shape, false);
         }
         
         prev_dir = o.direction;
@@ -102,7 +102,7 @@ Opponent create_opponent(double time, double speed, Direction direction, Shape s
     o.speed = speed;
     o.active = false;
     o.direction = direction;
-    o.rect_size = 40;
+    o.rect_size = 20;
     o.time = time;
     o.shape = shape;
     o.x = 0;

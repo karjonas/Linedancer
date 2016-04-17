@@ -15,8 +15,8 @@ void Drawing::draw_user(int w, int h, User& user)
   else
     points = calc_user_rectangle_points(user.user_x, h/2, false, user.rect_size);
 
-  points.insert(points.begin(), Point(0,h/2));
-  points.push_back(Point(w,h/2));
+  points.insert(points.begin(), Point(100,h/2));
+  points.push_back(Point(w-100,h/2));
   
   const size_t num_pts = points.size();
   
@@ -24,7 +24,7 @@ void Drawing::draw_user(int w, int h, User& user)
   {
     auto fst = points[i];
     auto snd = points[i+1];
-    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color0(), 3.0f);
+    al_draw_line(fst.x, fst.y, snd.x, snd.y, ColorScheme::color0(), 1.0f);
   }
 }
 
@@ -42,7 +42,7 @@ void Drawing::draw_opponent(int /* w */, int h, Opponent& opponent)
   {
     auto fst = points[i];
     auto snd = points[i+1];
-    al_draw_line(fst.x, fst.y, snd.x, snd.y, opponent.is_shapeshifter ? ColorScheme::color0() : ColorScheme::color1(), 3.0f);
+    al_draw_line(fst.x, fst.y, snd.x, snd.y, opponent.is_shapeshifter ? ColorScheme::color0() : ColorScheme::color1(), 1.0f);
   }
 }
 

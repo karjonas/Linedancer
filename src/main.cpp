@@ -54,8 +54,12 @@ void init(void)
     if (!timer)
         abort_game("Failed to create timer");
  
+    ALLEGRO_DISPLAY_MODE disp_data;
+    al_get_display_mode(0, &disp_data);
+   
     al_set_new_display_flags(ALLEGRO_WINDOWED);
-    display = al_create_display(1600, 480);
+    //display = al_create_display(disp_data.width, disp_data.height);
+    display = al_create_display(640, 480);
     if (!display)
         abort_game("Failed to create display");
  
@@ -133,7 +137,7 @@ void game_loop(void)
                 if (!opponent.active && elapsed_time >= opponent.time)
                 {
                     opponent.active = true;
-                    opponent.x = opponent.direction == Direction::LEFT ? windowWidth + 100 : -100;                    
+                    opponent.x = opponent.direction == Direction::LEFT ? windowWidth - 100 : 100;                    
                 }
                 else if (opponent.active)
                 {
@@ -174,8 +178,8 @@ void game_loop(void)
                 user.user_x = user.user_x + user.user_speed*dt;
             }
             
-            user.user_x = std::max(40.0, user.user_x);
-            user.user_x = std::min(static_cast<double>(windowWidth) - 40.0, user.user_x);            
+            user.user_x = std::max(100.0 + user.rect_size/2, user.user_x);
+            user.user_x = std::min(static_cast<double>(windowWidth) - 100.0 -(user.rect_size/2), user.user_x);            
             
             time_last = time_curr;
         }
@@ -207,7 +211,7 @@ void game_loop(void)
           
             if (level.first_level)
             {
-                Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, elapsed_time);
+                Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2 , windowHeight/5, elapsed_time);
             }
             else
             {

@@ -19,10 +19,10 @@ enum class Direction
 struct User
 {
 	double user_x = 300.0;
-	double user_speed = 500.0; // Pixels per second
+	double user_speed = 250.0; // Pixels per second
 	bool move_left = false;
 	bool move_right = false;
-	size_t rect_size = 40;
+	size_t rect_size = 20;
 	Shape user_shape = Shape::RECTANGLE;
 };
 
