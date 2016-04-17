@@ -102,9 +102,9 @@ void game_loop(void)
         
     User user{};
     user.user_x = windowWidth/2;
-    int level_nr = 1;
+    int level_nr = 3;
 
-    LevelData level(create_level(60, 0, false, {Shape::RECTANGLE, Shape::TRIANGLE}));
+    LevelData level(create_level(60, level_nr, false, {Shape::RECTANGLE, Shape::TRIANGLE, Shape::TALL_RECTANGLE}));
     
     ALLEGRO_KEYBOARD_STATE kbd_state;
     

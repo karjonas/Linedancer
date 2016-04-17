@@ -62,7 +62,7 @@ struct LevelData
 	bool first_level = false;
 };
 
-LevelData create_level(size_t num_opponents, int seed, bool is_first, const std::vector<Shape>& allowed_shapes);
+LevelData create_level(size_t num_opponents, int level, bool is_first, const std::vector<Shape>& allowed_shapes);
 
 std::vector<Point> calc_user_rectangle_points(double x, double y, bool flip, int rect_size);
 std::vector<Point> calc_user_triangle_points(double x, double y, bool flip, int rect_size);
