@@ -14,6 +14,10 @@
 #include "GlobalState.h"
 #include "Drawing.h"
 
+#ifndef DATA_DIR
+#define DATA_DIR "../data"
+#endif
+
 bool done;
 ALLEGRO_EVENT_QUEUE* event_queue;
 ALLEGRO_TIMER* timer;
@@ -60,9 +64,12 @@ void init(void)
     al_register_event_source(event_queue, al_get_display_event_source(display));
     
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
-    
-    font = al_load_ttf_font("src/Atari_Full.ttf", 16,0 );
 
+    auto appDir = getenv("APPDIR");
+    const std::string appDirPrefix = appDir != nullptr ? appDir : "";
+    const std::string fullPath = appDirPrefix + DATA_DIR + "/Atari_Full.ttf";
+
+    font = al_load_ttf_font(fullPath.c_str(), 16,0 );
     done = false;
 }
  

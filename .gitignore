@@ -40,3 +40,6 @@ luac.out
 *.hex
 ld35
 nbproject
+
+build/
+*.AppImage
