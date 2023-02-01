@@ -11,7 +11,7 @@ std::vector<Point> calc_user_rectangle_points(double x, double y, bool flip, int
   int sign = flip ? 1 : -1;
 
   Point p0{x - rect_half, y };
-  Point p1{x - rect_half, y + sign*rect_size };
+  Point p1{x - rect_half - 0.5, y + sign*rect_size };
   Point p2{x + rect_half, y + sign*rect_size };
   Point p3{x + rect_half, y };
 
@@ -39,7 +39,7 @@ std::vector<Point> calc_user_tall_rectangle_points(double x, double y, bool flip
   int sign = flip ? 1.0 : -1.0;
 
   Point p0{x - rect_4th,  y };
-  Point p1{x - rect_4th,  y + sign*rect_size*2};
+  Point p1{x - rect_4th - 0.5,  y + sign*rect_size*2};
   Point p2{x + rect_4th,  y + sign*rect_size*2};
   Point p3{x + rect_4th,  y };
   
