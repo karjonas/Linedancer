@@ -43,3 +43,4 @@ nbproject
 
 build/
 *.AppImage
+CMakeLists.txt.user
