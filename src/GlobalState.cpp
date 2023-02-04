@@ -33,7 +33,6 @@ std::vector<Point> calc_user_triangle_points(double x, double y, bool flip, int 
 
 std::vector<Point> calc_user_tall_rectangle_points(double x, double y, bool flip, int rect_size)
 {
-  double rect_half = rect_size*0.5;
   double rect_4th = rect_size*0.25;
 
   int sign = flip ? 1.0 : -1.0;
@@ -84,7 +83,6 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int level)
     
     std::vector<Opponent> opponents;
     
-    Direction prev_dir = Direction::LEFT;
     Shape prev_shape = Shape::RECTANGLE;
     bool prev_shifter = false;
     int time_glob = 0;
@@ -136,7 +134,6 @@ std::vector<Opponent> generate_opponents(size_t num_opponents, int level)
                 o = create_opponent(time, speed, dir, prev_shape, false);
             }
 
-            prev_dir = o.direction;
             prev_shape = o.shape;
             prev_shifter = o.is_shapeshifter;
 

@@ -7,8 +7,8 @@ project(linedancer)
 
 set(SOURCES_CPP
   src/main.cpp
-  src/Drawing.cpp
-  src/GlobalState.cpp
+  src/Drawing.cpp src/Drawing.h
+  src/GlobalState.cpp src/GlobalState.h
 )
 
 add_executable(linedancer ${SOURCES_CPP})
