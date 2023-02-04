@@ -32,8 +32,8 @@ void Drawing::draw_user(int w, int h, User& user)
   else
     points = calc_user_rectangle_points(user.user_x, h/2, false, user.rect_size);
 
-  points.insert(points.begin(), Point(100,h/2));
-  points.push_back(Point(w-100,h/2));
+  points.insert(points.begin(), Point(0,h/2));
+  points.push_back(Point(w,h/2));
   
   const size_t num_pts = points.size();
   
@@ -139,7 +139,7 @@ void Drawing::draw_all(int w, int h, User& user, const std::vector<Opponent>& op
     });
 
     std::vector<LineColor> lcs;
-    auto last_pt = Point(100,h/2);
+    auto last_pt = Point(0,h/2);
 
     for (auto& sp : sps)
     {
@@ -154,7 +154,7 @@ void Drawing::draw_all(int w, int h, User& user, const std::vector<Opponent>& op
         last_pt = sp.points.back();
     }
 
-    lcs.emplace_back(last_pt, Point(w-100, h/2), ColorScheme::color0());
+    lcs.emplace_back(last_pt, Point(w, h/2), ColorScheme::color0());
 
     for (auto& lc : lcs)
     {

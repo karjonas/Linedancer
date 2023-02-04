@@ -49,7 +49,7 @@ void init(void)
     ALLEGRO_DISPLAY_MODE disp_data;
     al_get_display_mode(0, &disp_data);
    
-    al_set_new_display_flags(ALLEGRO_WINDOWED);
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
     //display = al_create_display(disp_data.width, disp_data.height);
     display = al_create_display(800, 480);
     if (!display)
@@ -92,8 +92,8 @@ void game_loop(void)
     bool redraw = true;
     al_start_timer(timer);
 
-    int windowWidth = al_get_display_width(display);
-    int windowHeight = al_get_display_height(display);
+    constexpr int windowWidth = 600;
+    constexpr int windowHeight = 288;
         
     User user{};
     user.user_x = windowWidth/2;
@@ -111,7 +111,8 @@ void game_loop(void)
 
     bool death = false;
     int finished_level = 5;
-    int num_kills = 0;  
+    int num_kills = 0;
+
     while (!done)
     {        
         auto& opponents = level.opponents;
@@ -134,7 +135,7 @@ void game_loop(void)
                 if (!opponent.active && elapsed_time >= opponent.time)
                 {
                     opponent.active = true;
-                    opponent.x = opponent.direction == Direction::LEFT ? windowWidth - 100 : 100;                    
+                    opponent.x = opponent.direction == Direction::LEFT ? windowWidth : 0;
                 }
                 else if (opponent.active)
                 {
@@ -175,8 +176,8 @@ void game_loop(void)
                 user.user_x = user.user_x + user.user_speed*dt;
             }
             
-            user.user_x = std::max(100.0 + 2*user.rect_size, user.user_x);
-            user.user_x = std::min(static_cast<double>(windowWidth) - 100.0 -(2*user.rect_size), user.user_x);            
+            user.user_x = std::max<double>(2*user.rect_size, user.user_x);
+            user.user_x = std::min<double>(windowWidth -(2*user.rect_size), user.user_x);
             
             time_last = time_curr;
         }
@@ -188,6 +189,19 @@ void game_loop(void)
                 //main_loop.key_pressed(event.keyboard.keycode);
             }
         }
+        else if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
+            al_acknowledge_resize(display);
+            int w = al_get_display_width(display);
+            int h = al_get_display_height(display);
+            const int scale = std::max(1, std::min(w/windowWidth, h/windowHeight));
+            w = w/scale;
+            h = h/scale;
+            ALLEGRO_TRANSFORM trans;
+            al_identity_transform(&trans);
+            al_translate_transform(&trans, (w - windowWidth)/2, (h - windowHeight)/2);
+            al_scale_transform(&trans, scale, scale);
+            al_use_transform(&trans);
+        }
         else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
           done = true;
         }
@@ -195,20 +209,25 @@ void game_loop(void)
         if (redraw && al_is_event_queue_empty(event_queue)) {
             redraw = false;
             al_clear_to_color(ColorScheme::color_bg());
+
+            // draw viewport
+            //al_draw_rectangle(0, 0, windowWidth, windowHeight,
+            //al_map_rgb(0x9b,0xd7,0xd5), 1);
+
             
             Drawing::draw_all(windowWidth, windowHeight, user, opponents);
 
             if (level.first_level)
             {
-                Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2 , windowHeight/5, elapsed_time);
+                Drawing::draw_tutorial_texts(font, ColorScheme::color1(), windowWidth/2 , 0, elapsed_time);
             }
             else if (level_nr != finished_level)
             {
-                Drawing::draw_level_texts(font, ColorScheme::color1(), windowWidth/2, windowHeight/5, level_nr, elapsed_time);
+                Drawing::draw_level_texts(font, ColorScheme::color1(), windowWidth/2, 0, level_nr, elapsed_time);
             }
             else
             {
-                Drawing::draw_credits(font, ColorScheme::color1(), windowWidth/2, windowHeight/5);
+                Drawing::draw_credits(font, ColorScheme::color1(), windowWidth/2, 0);
             }
             al_flip_display();
         }
